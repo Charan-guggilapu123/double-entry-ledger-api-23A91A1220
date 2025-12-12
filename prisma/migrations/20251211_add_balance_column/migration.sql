@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Account" ADD COLUMN "balance" NUMERIC(20,8) NOT NULL DEFAULT 0;

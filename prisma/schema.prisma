@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    // FIXED: removed @db.Uuid
+  accountType String
+  currency    String    @db.Char(3)
+  status      String    @default("active")
+  balance     Decimal   @default(0) @db.Decimal(20, 8)
+  createdAt   DateTime  @default(now())
+
+  ledgerEntries LedgerEntry[] @relation("account_entries")
+  sentTransactions Transaction[] @relation("tx_source")
+  receivedTransactions Transaction[] @relation("tx_dest")
+
+  @@index([userId])
+}
+
+model Transaction {
+  id                   String       @id @default(uuid()) @db.Uuid
+  type                 String
+  sourceAccountId      String?      @db.Uuid
+  destinationAccountId String?      @db.Uuid
+  amount               Decimal      @db.Decimal(20, 8)
+  currency             String       @db.Char(3)
+  status               String       @default("pending")
+  description          String?
+  createdAt            DateTime     @default(now())
+
+  ledgerEntries LedgerEntry[]
+
+  sourceAccount      Account? @relation("tx_source", fields: [sourceAccountId], references: [id])
+  destinationAccount Account? @relation("tx_dest", fields: [destinationAccountId], references: [id])
+}
+
+model LedgerEntry {
+  id            String    @id @default(uuid()) @db.Uuid
+  accountId     String    @db.Uuid
+  transactionId String    @db.Uuid
+  entryType     String
+  amount        Decimal   @db.Decimal(20, 8)
+  currency      String    @db.Char(3)
+  createdAt     DateTime  @default(now())
+
+  account     Account     @relation("account_entries", fields: [accountId], references: [id])
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+
+  @@index([accountId, createdAt(sort: Desc)])
+}
