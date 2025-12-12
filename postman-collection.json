@@ -1,0 +1,79 @@
+{
+  "info": {
+    "name": "Double Entry Ledger API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for the Financial Ledger REST API"
+  },
+  "item": [
+    {
+      "name": "Create Account",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"john_doe\",\n  \"accountType\": \"checking\",\n  \"currency\": \"USD\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/accounts",
+          "host": ["{{baseUrl}}"],
+          "path": ["accounts"]
+        }
+      }
+    },
+    {
+      "name": "Get Account",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/accounts/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["accounts", ":id"],
+          "variable": [
+            {"key": "id", "value": "00000000-0000-0000-0000-000000000000"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Account Ledger",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/accounts/:id/ledger",
+          "host": ["{{baseUrl}}"],
+          "path": ["accounts", ":id", "ledger"],
+          "variable": [
+            {"key": "id", "value": "00000000-0000-0000-0000-000000000000"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "Transfer Funds",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccountId\": \"00000000-0000-0000-0000-000000000000\",\n  \"destinationAccountId\": \"00000000-0000-0000-0000-000000000001\",\n  \"amount\": \"100.50\",\n  \"currency\": \"USD\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transfers",
+          "host": ["{{baseUrl}}"],
+          "path": ["transfers"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ]
+}
